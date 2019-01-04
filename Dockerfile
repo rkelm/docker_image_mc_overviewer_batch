@@ -20,8 +20,7 @@ RUN apt-get -qy install --no-install-recommends apt-utils
 RUN echo "deb https://overviewer.org/debian ./" >> /etc/apt/sources.list
 RUN wget -nv -O - https://overviewer.org/debian/overviewer.gpg.asc | apt-key add -
 RUN apt-get -q update && apt-get -qy install minecraft-overviewer
-RUN wget -nv https://launcher.mojang.com/v1/objects/3737db93722a9e39eeada7c27e7aca28b144ffa7/server.jar -P ~/.minecraft/versions/${
-MC_VERSION}/
+RUN wget -nv https://launcher.mojang.com/v1/objects/3737db93722a9e39eeada7c27e7aca28b144ffa7/server.jar -P ~/.minecraft/versions/${MC_VERSION}/
 
 # aws cli installieren.
 RUN wget -nv https://bootstrap.pypa.io/get-pip.py

@@ -45,9 +45,9 @@ else
 fi
 
 # Prepare rootfs
-mkdir -p ${project_dir}/root/bin
-mkdir -p ${project_dir}/root/map_data
-mkdir -p ${project_dir}/root/render_output
+mkdir -p ${project_dir}/rootfs/bin
+mkdir -p ${project_dir}/rootfs/map_data
+mkdir -p ${project_dir}/rootfs/render_output
 
 # Build.
 echo "Building $local_repo_tag"
