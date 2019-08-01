@@ -47,6 +47,11 @@ fi
 
 path=$(dirname $0)
 
+# Log environment and run parameters
+echo "Running: $0 $@"
+echo "Printing environment:"
+echo $( env | sort | sed "s/google_api_key=.*/google_api_key=XXXXXXXXXXXX/" )
+
 # Variable render_output must be set or root file system will be deleted.
 if [ -z "$render_output" ] ; then
     echo "Variable render_output is not set"
@@ -91,12 +96,12 @@ fi
 
 
 # Retrieve map files.
-echo 'Retrieving map files.'
+echo "Copying map file s3://${bucket}/${bucket_map_dir}/${map_id}.tgz to ${tmp_dir}."
 aws s3 --region "$region" cp "s3://${bucket}/${bucket_map_dir}/${map_id}.tgz" "${tmp_dir}"
 errchk $? "aws s3 cp call failed for s3://${bucket}/${bucket_map_dir}/${map_id}.tgz."
 
 # Untar world files.
-echo "Unpacking map files to $map_data_dir."
+echo "Unpacking map file to $map_data_dir."
 tar xzf "${tmp_dir}/${map_id}.tgz" -C "$map_data_dir"
 errchk $? "untar failed for ${tmp_dir}/${map_id}.tgz."
 
@@ -126,7 +131,7 @@ if [ -e "${map_data_dir}/overviewer_config/overviewer.config" ] ; then
     ret="$?"
 else
     echo 'No config file found. Running basic render.'
-    overviewer.py "${map_data_dir}/worlds/world" "$render_output"
+    overviewer.py "${map_data_dir}/world" "$render_output"
     ret="$?"
 fi
 errchk "$ret" "overviewer.py call failed."
@@ -144,7 +149,9 @@ echo 'Caching rendered files in s3.'
 tar czf "${tmp_dir}/${map_id}_render.tgz" -C "$render_output" .
 
 # Upload archive with cached files to s3.
+echo "Copying ${tmp_dir}/${map_id}_render.tgz to s3://${bucket_render_cache}/${bucket_render_cache_dir}/${map_id}_render.tgz"
 aws s3 --region "$region" cp "${tmp_dir}/${map_id}_render.tgz" "s3://${bucket_render_cache}/${bucket_render_cache_dir}/${map_id}_render.tgz"
+errchk $? "awsc cp call failed"
 rm "${tmp_dir}/${map_id}_render.tgz"
 
 # Delete lowest layer of map tiles.
@@ -154,12 +161,13 @@ del_lowest_dir "$render_output"
 del_lowest_dir "$render_output"
 
 # Upload new files.
-echo Uploading changed tiles.
+echo "Uploading changed tiles with aws sync to s3://${pub_bucket}/${pub_bucket_maps_dir}/${map_id}/"
 aws --region "${region}" s3 sync --only-show-errors "${render_output}/" "s3://${pub_bucket}/${pub_bucket_maps_dir}/${map_id}/"
-
+errchk $? ""
 echo "Clearing map data"
 rm -fr ${map_data_dir}/*
-mkdir -p "${map_data_dir}/worlds/world" "${map_data_dir}/worlds/world_nether" "${map_data_dir}/worlds/world_the_end"
+
+mkdir -p "${map_data_dir}/world" "${map_data_dir}/world_nether" "${map_data_dir}/world_the_end"
 
 echo 'Clearing render output directory.'
 rm -fr ${render_output}/*

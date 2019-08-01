@@ -17,7 +17,7 @@ errchk() {
 # Assign configuration values here or set environment variables.
 local_repo_path="$BAKERY_LOCAL_REPO_PATH"
 remote_repo_path="$BAKERY_REMOTE_REPO_PATH"
-repo_name="overviewer_minecraft"
+repo_name="overviewer_minecraft_batch"
 
 # Default server properties may be changed below.
 # Some options may be set directly in the Dockerfile.

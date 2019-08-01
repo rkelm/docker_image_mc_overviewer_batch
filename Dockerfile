@@ -1,4 +1,4 @@
-FROM ubuntu:18.10
+FROM ubuntu:16.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV APP_NAME Overviewer for Minecraft for aws batch
@@ -9,7 +9,7 @@ RUN echo *** Building for Minecraft Version ${MC_VERSION} ***
 
 # Setup local environment vars.
 ENV map_data_dir /root/map_data
-ENV worlds_dir ${map_data_dir}/worlds
+ENV worlds_dir ${map_data_dir}
 ENV render_output /root/render_output
 ENV tmp_dir /tmp
 ENV map_id MinecraftMap
@@ -23,10 +23,18 @@ RUN apt-get -q update && apt-get -qy install minecraft-overviewer
 RUN wget -nv https://launcher.mojang.com/v1/objects/3737db93722a9e39eeada7c27e7aca28b144ffa7/server.jar -P ~/.minecraft/versions/${MC_VERSION}/
 
 # aws cli installieren.
-RUN wget -nv https://bootstrap.pypa.io/get-pip.py
-RUN python get-pip.py --user
-RUN rm get-pip.py
-RUN /root/.local/bin/pip install awscli --upgrade --user
+#RUN apt-get -qy install python
+#RUN wget -nv https://bootstrap.pypa.io/get-pip.py
+#RUN python get-pip.py --user
+#RUN rm get-pip.py
+#RUN /root/.local/bin/pip install awscli --upgrade --user
+
+RUN apt-get -qy install python-pip
+RUN pip install --upgrade pip
+RUN pip install --upgrade awscli
+
+RUN mkdir -p /root/.minecraft/versions/${MC_VERSION}
+RUN wget https://overviewer.org/textures/${MC_VERSION} -O ~/.minecraft/versions/${MC_VERSION}/${MC_VERSION}.jar
 
 # Add pip + aws binary paths to PATH
 ENV PATH ${PATH}:/root/.local/bin:/root/bin
@@ -63,6 +71,6 @@ RUN echo -e ' ************************************************** \n' \
 '**************************************************' > /image_info.txt
 
 # Path to map files. Path to config file. Path to render output.
-VOLUME ["/root/map_data/worlds/world","/root/map_data/worlds/world_nether","/root/map_data/worlds/world_the_end","/root/map_data/overviewer_config","/root/render_output"]
+VOLUME ["/root/map_data/","/root/render_output"]
 
 CMD ["/bin/cat", "/image_info.txt"]
