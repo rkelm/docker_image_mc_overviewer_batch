@@ -130,9 +130,10 @@ if [ -e "${map_data_dir}/overviewer_config/overviewer.config" ] ; then
     map_id="$map_id" overviewer.py --config="${map_data_dir}/overviewer_config/overviewer.config"
     ret="$?"
 else
-    echo 'No config file found. Running basic render.'
-    overviewer.py "${map_data_dir}/world" "$render_output"
+    echo 'No config file found. Running basic render with default config.'
+    map_id="$map_id" overviewer.py --config="${default_config}"
     ret="$?"
+#    overviewer.py "${map_data_dir}/world" "$render_output"
 fi
 errchk "$ret" "overviewer.py call failed."
 

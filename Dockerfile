@@ -11,6 +11,7 @@ RUN echo *** Building for Minecraft Version ${MC_VERSION} ***
 ENV map_data_dir /root/map_data
 ENV worlds_dir ${map_data_dir}
 ENV render_output /root/render_output
+ENV default_config /root/overviewer_default.config
 ENV tmp_dir /tmp
 ENV map_id MinecraftMap
 
@@ -41,6 +42,7 @@ ENV PATH ${PATH}:/root/.local/bin:/root/bin
 
 ADD rootfs/ /
 COPY render_map.sh /root/bin/
+COPY overviewer_default.config ${default_config}
 
 RUN echo -e ' ************************************************** \n' \
   'Docker Image to run app ${APP_NAME} ${MC_VERSION}. \n' \
@@ -50,6 +52,8 @@ RUN echo -e ' ************************************************** \n' \
   '                             -v <host-config-&-texture-dir>:${map_data_dir}/overviewer_config \\ \n' \
   '                             -v <host-render-output-dir>:${render_output} \\ \n' \
   '                             <image_name> overviewer.py --config=${map_data_dir}/overviewer_config/<config file> \n' \
+  "   Default config file: $default_config \n"\
+  '  \n'\
   '   Simple run without config: \' \
   '   	  	  	docker run -v <host-world-dir>:${worlds_dir}/world \\ \n' \
   '                             -v <host-render-output-dir>:${render_output} \\ \n' \
