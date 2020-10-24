@@ -51,7 +51,8 @@ mkdir -p ${project_dir}/rootfs/render_output
 
 # Build.
 echo "Building $local_repo_tag"
-docker build --no-cache --build-arg "APP_VERSION=${mc_version}" -t "${local_repo_tag}" "${project_dir}" 
+# --no-cache?
+docker build --build-arg "APP_VERSION=${mc_version}" -t "${local_repo_tag}" "${project_dir}" 
 errchk $? 'Docker build failed.'
 
 # Get image id.
