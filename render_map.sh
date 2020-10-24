@@ -159,7 +159,7 @@ rm "${tmp_dir}/${map_id}_render.tgz"
 del_lowest_dir "$render_output"
 
 # Delete lowest layer of map tiles, again.
-del_lowest_dir "$render_output"
+#del_lowest_dir "$render_output"
 
 # Upload new files.
 echo "Uploading changed tiles with aws sync to s3://${pub_bucket}/${pub_bucket_maps_dir}/${map_id}/"
