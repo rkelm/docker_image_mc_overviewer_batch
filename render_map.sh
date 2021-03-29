@@ -164,7 +164,14 @@ del_lowest_dir "$render_output"
 # Upload new files.
 echo "Uploading changed tiles with aws sync to s3://${pub_bucket}/${pub_bucket_maps_dir}/${map_id}/"
 aws --region "${region}" s3 sync --only-show-errors "${render_output}/" "s3://${pub_bucket}/${pub_bucket_maps_dir}/${map_id}/"
-errchk $? ""
+
+ret = $?
+if [ "$?" -eq "2" ] ;
+   echo "Not all files were uploaded to s3."
+else
+    errchk $? "Error uploading files to s3"
+fi
+ 
 echo "Clearing map data"
 rm -fr ${map_data_dir}/*
 
