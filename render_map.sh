@@ -166,10 +166,10 @@ echo "Uploading changed tiles with aws sync to s3://${pub_bucket}/${pub_bucket_m
 aws --region "${region}" s3 sync --only-show-errors "${render_output}/" "s3://${pub_bucket}/${pub_bucket_maps_dir}/${map_id}/"
 
 ret = $?
-if [ "$?" -eq "2" ] ;
+if [ "$ret" -eq "2" ] ;
    echo "Not all files were uploaded to s3."
 else
-    errchk $? "Error uploading files to s3"
+    errchk $ret "Error uploading files to s3"
 fi
  
 echo "Clearing map data"
