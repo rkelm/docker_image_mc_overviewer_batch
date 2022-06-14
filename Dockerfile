@@ -17,7 +17,7 @@ ENV map_id MinecraftMap
 ENV overviewer_repo_name Minecraft-Overviewer
 ENV local_src_dir /usr/local/src
 ENV overviewer_src_dir ${local_src_dir}/${overviewer_repo_name}
-ENV overviewer_git_url git://github.com/overviewer/Minecraft-Overviewer.git
+ENV overviewer_git_url https://github.com/overviewer/Minecraft-Overviewer.git
 
 # ENV DATE = $(date -Idate)
 RUN apt-get -q update
